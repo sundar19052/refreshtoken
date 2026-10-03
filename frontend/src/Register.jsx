@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "./api";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
 
@@ -10,11 +11,7 @@ function Register() {
     });
 
 
-    
-
-
-
-
+     const navigate=useNavigate();
      const handleChange = (e) => {
 
         setForm({
@@ -36,6 +33,7 @@ function Register() {
             );
 
             alert(response.data.message);
+            navigate("/login")
 
         } catch (error) {
 
