@@ -102,21 +102,14 @@ router.post("/login", async (req, res) => {
 
         const { email, password } = req.body;
 
-
-      
-	   // Find user
+        // Find user
         const user = await User.findOne({ email });
 
         if (!user) {
-
             return res.status(401).json({
-
                 message: "Invalid email or password"
-
             });
-
         }
-
 
         // Check password
         const passwordMatch = await bcrypt.compare(
@@ -125,69 +118,44 @@ router.post("/login", async (req, res) => {
         );
 
         if (!passwordMatch) {
-
             return res.status(401).json({
-
                 message: "Invalid email or password"
-
             });
-
         }
-
 
         // Generate tokens
         const accessToken = generateAccessToken(user);
-
         const refreshToken = generateRefreshToken(user);
 
-
-        // Store Access Token in HttpOnly cookie
+        // Access Token Cookie
         res.cookie("accessToken", accessToken, {
-
             httpOnly: true,
-
-            sameSite: "lax",
-
+            secure: true,
+            sameSite: "none",
             maxAge: 1 * 60 * 1000
-
         });
 
-
-        // Store Refresh Token in HttpOnly cookie
+        // Refresh Token Cookie
         res.cookie("refreshToken", refreshToken, {
-
             httpOnly: true,
-
-            sameSite: "lax",
-
-            maxAge: 3* 60 * 1000
-
+            secure: true,
+            sameSite: "none",
+            maxAge: 3 * 60 * 1000
         });
 
-
-	 res.json({
-
+        res.json({
             message: "Login successful",
-
             user: {
-
                 id: user._id,
-
                 name: user.name,
-
                 email: user.email
-
             }
-
         });
-
 
     } catch (error) {
 
         res.status(500).json({
-
             message: error.message
-
         });
 
     }
@@ -200,78 +168,56 @@ router.post("/login", async (req, res) => {
 router.post("/refresh-token", async (req, res) => {
 
     try {
+
         const refreshToken = req.cookies.refreshToken;
 
         // No refresh token
         if (!refreshToken) {
-
             return res.status(401).json({
-
                 message: "Refresh token missing"
-
             });
-
         }
 
         // Verify refresh token
         const decoded = jwt.verify(
-
             refreshToken,
-
             process.env.JWT_REFRESH_SECRET
-
         );
-
 
         // Find user
         const user = await User.findById(decoded.id);
 
         if (!user) {
-
             return res.status(401).json({
-
                 message: "User not found"
-
             });
-
         }
-
 
         // Generate NEW access token
         const newAccessToken = generateAccessToken(user);
 
-        
-        // Store new access token
+        // Store new access token in cookie
         res.cookie("accessToken", newAccessToken, {
-
             httpOnly: true,
-
-            sameSite: "lax",
-
-            maxAge: 1* 60 * 1000
-
+            secure: true,
+            sameSite: "none",
+            maxAge: 1 * 60 * 1000
         });
-
 
         res.json({
-
             message: "Access token refreshed"
-
         });
-
 
     } catch (error) {
 
+        console.log(error);
+
         return res.status(401).json({
-
             message: "Invalid or expired refresh token"
-
         });
-
     }
 
 });
-
 
 // LOGOUT
 
