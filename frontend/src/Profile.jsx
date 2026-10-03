@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
 import api from "./api";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
 
     const [user, setUser] = useState(null);
-
+     const navigate=useNavigate()
     useEffect(() => {
 
         getProfile();
@@ -33,8 +34,11 @@ function Profile() {
 
         try {
             await api.post("/auth/logout");
-
-            window.location.href = "/login";
+            alert("Logout Sucess")
+           setTimeout(() => {
+             
+             navigate("/login")
+           }, 2000);
 
         } catch (error) {
             console.log(error);
