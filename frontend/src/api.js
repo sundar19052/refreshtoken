@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://refreshtoken-backend.onrender.com",
+    baseURL: "https://refreshtoken-backend.onrender.com/api",
     withCredentials: true
 });
 
 const refreshApi = axios.create({
-    baseURL: "https://refreshtoken-backend.onrender.com",
+    baseURL: "https://refreshtoken-backend.onrender.com/api",
     withCredentials: true
 });
 
