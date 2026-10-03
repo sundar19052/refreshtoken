@@ -32,7 +32,7 @@ app.use(cookieParser());
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: "https://refreshtoken-frontend.onrender.com",
         credentials: true
     })
 );
